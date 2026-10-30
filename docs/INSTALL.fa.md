@@ -2,7 +2,7 @@
 
 [English](INSTALL.md) · [فارسی](INSTALL.fa.md) · [Русский](INSTALL.ru.md) · [العربية](INSTALL.ar.md) · [جدول سازگاری](COMPATIBILITY.fa.md)
 
-کد منبع نصب‌کننده از ⁦`--lang en|fa|ru|ar`⁩ پشتیبانی می‌کند. آرشیوهای منتشرشدهٔ ⁦v0.2.0-rc.1⁩ همچنان نصب‌کنندهٔ قبلی فارسی و انگلیسی دارند. در ساخت جدیدِ دارای ترجمه، می‌توان از ⁦`--lang ru`⁩ یا ⁦`--lang ar`⁩ و برای حذف از ⁦`sh uninstall.sh ru`⁩ یا ⁦`sh uninstall.sh ar`⁩ استفاده کرد. فایل‌های نصب نسخه‌های مختلف را با هم ترکیب نکنید.
+نصب‌کنندهٔ ⁦v0.2.0-rc.2⁩ هر چهار زبان را پشتیبانی می‌کند: ⁦`--lang en`⁩ انگلیسی، ⁦`--lang fa`⁩ فارسی، ⁦`--lang ru`⁩ روسی و ⁦`--lang ar`⁩ عربی. برای حذف، کد زبان آرگومان اول است؛ مانند ⁦`sh uninstall.sh fa`⁩. فایل‌های نصب نسخه‌های مختلف را با هم ترکیب نکنید.
 
 ## پیش‌نیازها
 
@@ -29,7 +29,7 @@ ssh root@ROUTER_ADDRESS
 از خروجی ساخت موفق یا انتشار بازبینی‌شده، آرشیو مناسب پردازنده و فایل متناظر با پسوند ⁦sha256⁩ را بگیرید. روی کامپیوتر و در پوشه فایل‌ها:
 
 ```sh
-sha256sum -c firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz.sha256
+sha256sum -c firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz.sha256
 ```
 
 این مثال ⁦ARMv7⁩ است؛ برای معماری دیگر نام فایل را عوض کنید. ⁦checksum⁩ سلامت فایل را کنترل می‌کند و به‌تنهایی تأیید مستقل اعتبار ناشر نیست.
@@ -37,7 +37,7 @@ sha256sum -c firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz.sha256
 فایل را با فایل‌منیجر ⁦LuCI⁩، ⁦WinSCP⁩ یا ⁦SCP⁩ در مسیر /⁦root⁩ بارگذاری کنید:
 
 ```sh
-scp firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz root@ROUTER_ADDRESS:/root/
+scp firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz root@ROUTER_ADDRESS:/root/
 ```
 
 اگر کلاینت ⁦OpenSSH⁩ خطای نبود ⁦SFTP⁩ داد، از گزینهٔ `scp -O` یا روش انتقال دیگری استفاده کنید. آرشیو را در ⁦Flash Firmware⁩، ⁦Restore Backup⁩ یا مدیر بسته بارگذاری نکنید.
@@ -48,7 +48,7 @@ scp firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz root@ROUTER_ADDRESS:/root
 
 ```sh
 cd /root
-tar -xzf firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz
+tar -xzf firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz
 cd firefox-vpn-openwrt
 sh install.sh --lang fa --check
 ```

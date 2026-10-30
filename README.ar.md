@@ -32,19 +32,19 @@
 | تشخيص محلي | تقرير محدود بحقول مسموح بها، دون رفعه |
 | بناء للمجتمع | أرشيفات ARMv7 وARM64 وx86-64 وMIPS وMIPS little-endian |
 
-تتوفر الأدلة ورسائل المثبّت بالإنجليزية الأمريكية والفارسية والروسية والعربية. لا يترجم هذا المشروع لوحة المشروع الأصلي. يدعم المثبّت داخل أرشيفات v0.2.0-rc.1 المنشورة الإنجليزية والفارسية فقط؛ أُضيفت الروسية والعربية إلى الشيفرة للبناء التالي.
+تتوفر الأدلة ورسائل المثبّت بالإنجليزية الأمريكية والفارسية والروسية والعربية. لا يترجم هذا المشروع لوحة المشروع الأصلي. تتضمن أرشيفات v0.2.0-rc.2 لغات المثبّت الأربع.
 
 ## التنزيل والبناء التجريبي
 
-يتوفر [الإصدار المرشّح v0.2.0-rc.1 لاختبار المجتمع](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/tag/v0.2.0-rc.1). اجتازت أرشيفات المعالجات الخمسة البناء المتقاطع وفحوص التغليف.
+يتوفر [الإصدار المرشّح v0.2.0-rc.2 لاختبار المجتمع](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/tag/v0.2.0-rc.2). اجتازت أرشيفات المعالجات الخمسة البناء المتقاطع وفحوص التغليف.
 
 | المعالج | الأرشيف | التحقق من السلامة |
 | --- | --- | --- |
-| armv7 | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz.sha256) |
-| arm64 | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-arm64.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-arm64.tar.gz.sha256) |
-| amd64 | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-amd64.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-amd64.tar.gz.sha256) |
-| mips | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-mips.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-mips.tar.gz.sha256) |
-| mipsle | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-mipsle.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.1/firefox-vpn-openwrt-v0.2.0-rc.1-linux-mipsle.tar.gz.sha256) |
+| armv7 | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz.sha256) |
+| arm64 | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-arm64.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-arm64.tar.gz.sha256) |
+| amd64 | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-amd64.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-amd64.tar.gz.sha256) |
+| mips | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-mips.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-mips.tar.gz.sha256) |
+| mipsle | [تنزيل](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-mipsle.tar.gz) | [SHA-256](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases/download/v0.2.0-rc.2/firefox-vpn-openwrt-v0.2.0-rc.2-linux-mipsle.tar.gz.sha256) |
 
 **نجاح البناء ليس اختباراً للجهاز.** الأرشيفات مثبّتات تطبيق، وليست صور برامج ثابتة أو نسخاً احتياطية أو حزم `.ipk` أو `.apk`. اختر المعالج وفق [دليل التوافق](docs/COMPATIBILITY.ar.md). تتطلب المنصات الأخرى قبولاً صريحاً بالخيار `--experimental`؛ لا يعني ذلك دعم علامة تجارية بالكامل.
 

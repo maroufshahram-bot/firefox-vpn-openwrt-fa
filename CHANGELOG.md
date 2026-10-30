@@ -1,11 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.2.0-rc.2 — four-language community testing candidate
 
 - Add Russian and Arabic README, installation, compatibility and device-testing guides.
 - Add `--lang ru` / `--lang ar` installer messages and `ru` / `ar` uninstall messages.
-- Link all four languages; keep published rc.1 archives unchanged and clearly
-  distinguish their English/Persian installer from the next source build.
+- Include all four languages in install archives and update download/install links to rc.2.
+- Preserve rc.1 assets; no new real-device compatibility claims.
 
 ## 0.2.0-rc.1 — community testing candidate
 

@@ -14,7 +14,7 @@
 
 لا تثبّت فوق نسخة `test1` قديمة تعمل؛ لا يتوفر ترحيل تلقائي. لم يُختبر المثبّت الجديد على موجّه فعلي بعد.
 
-**لغة المثبّت:** تدعم الشيفرة الخيارات `--lang en` و`fa` و`ru` و`ar`. تحتوي أرشيفات **v0.2.0-rc.1** المنشورة على المثبّت السابق؛ استخدم `en` في الأوامر أدناه. مع بناء جديد يتضمن الترجمة، استبدل `--lang en` بـ `--lang ar`. لا تستبدل ملفات منفردة داخل الأرشيف القديم.
+**لغة المثبّت:** تدعم أرشيفات v0.2.0-rc.2 الخيارات `--lang en` و`fa` و`ru` و`ar`. تختار الأوامر أدناه العربية عبر `--lang ar`. لا تخلط ملفات من إصدارات مختلفة.
 
 ## ١. الاتصال بالموجّه
 
@@ -37,7 +37,7 @@ ssh root@ROUTER_ADDRESS
 </div>
 
 ```sh
-sha256sum -c firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz.sha256
+sha256sum -c firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz.sha256
 ```
 
 <div dir="rtl">
@@ -49,7 +49,7 @@ sha256sum -c firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz.sha256
 </div>
 
 ```sh
-scp firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz root@ROUTER_ADDRESS:/root/
+scp firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz root@ROUTER_ADDRESS:/root/
 ```
 
 <div dir="rtl">
@@ -64,9 +64,9 @@ scp firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz root@ROUTER_ADDRESS:/root
 
 ```sh
 cd /root
-tar -xzf firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz
+tar -xzf firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz
 cd firefox-vpn-openwrt
-sh install.sh --lang en --check
+sh install.sh --lang ar --check
 ```
 
 <div dir="rtl">
@@ -76,7 +76,7 @@ sh install.sh --lang en --check
 </div>
 
 ```sh
-sh install.sh --lang en --experimental --check
+sh install.sh --lang ar --experimental --check
 ```
 
 <div dir="rtl">
@@ -90,7 +90,7 @@ sh install.sh --lang en --experimental --check
 </div>
 
 ```sh
-sh install.sh --lang en
+sh install.sh --lang ar
 ```
 
 <div dir="rtl">
@@ -100,7 +100,7 @@ sh install.sh --lang en
 </div>
 
 ```sh
-sh install.sh --lang en --experimental
+sh install.sh --lang ar --experimental
 ```
 
 <div dir="rtl">
@@ -190,11 +190,11 @@ sh /usr/lib/firefox-vpn/diagnose.sh
 </div>
 
 ```sh
-sh uninstall.sh en
+sh uninstall.sh ar
 ```
 
 <div dir="rtl">
 
-مع بناء جديد يتضمن الترجمة يمكنك استخدام `sh uninstall.sh ar`. تُحفظ الحسابات في `/etc/firefox-vpn`؛ لا تتوفر إزالة مدمّرة للحسابات. لا توجد تحديثات تلقائية للنواة؛ استخدم إصدارات المشروع المراجَعة، وليس محدّث سطح المكتب أو مثبّت Linux عاماً.
+تُحفظ الحسابات في `/etc/firefox-vpn`؛ لا تتوفر إزالة مدمّرة للحسابات. لا توجد تحديثات تلقائية للنواة؛ استخدم إصدارات المشروع المراجَعة، وليس محدّث سطح المكتب أو مثبّت Linux عاماً.
 
 </div>

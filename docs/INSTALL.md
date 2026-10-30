@@ -2,10 +2,9 @@
 
 [English](INSTALL.md) · [فارسی](INSTALL.fa.md) · [Русский](INSTALL.ru.md) · [العربية](INSTALL.ar.md) · [Compatibility](COMPATIBILITY.md)
 
-Installer source accepts `--lang en|fa|ru|ar`. Published **v0.2.0-rc.1** archives
-contain the earlier English/Persian installer. With a newer build containing the
-translations, use `--lang ru` or `--lang ar`; uninstall accepts `ru` or `ar` as its
-first argument. Do not mix installer files from different builds.
+The v0.2.0-rc.2 installer supports `--lang en|fa|ru|ar`. Use `en` for US English,
+`fa` for Persian, `ru` for Russian or `ar` for Arabic. Uninstall accepts the same
+language code as its first argument. Do not mix installer files from different builds.
 
 ## Before you start
 
@@ -38,7 +37,7 @@ Choose the correct CPU archive from a successful build or reviewed release.
 Download its matching `.sha256` file. In the download directory on your computer:
 
 ```sh
-sha256sum -c firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz.sha256
+sha256sum -c firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz.sha256
 ```
 
 This example is for ARMv7. Change the filename for another target. A checksum
@@ -47,7 +46,7 @@ checks file integrity; it is not independent proof of publisher trust.
 Upload the archive to `/root` with a LuCI file manager, WinSCP or SCP:
 
 ```sh
-scp firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz root@ROUTER_ADDRESS:/root/
+scp firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz root@ROUTER_ADDRESS:/root/
 ```
 
 If OpenSSH SCP reports a missing SFTP subsystem, use `scp -O` or another transfer
@@ -59,7 +58,7 @@ On the router, extract the archive and run preflight:
 
 ```sh
 cd /root
-tar -xzf firefox-vpn-openwrt-v0.2.0-rc.1-linux-armv7.tar.gz
+tar -xzf firefox-vpn-openwrt-v0.2.0-rc.2-linux-armv7.tar.gz
 cd firefox-vpn-openwrt
 sh install.sh --lang en --check
 ```
