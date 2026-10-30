@@ -32,6 +32,21 @@ have already built. Check the actual run before downloading. Unsupported CPUs
 for either endianness; the installer also executes a local `-version` probe and
 rejects a binary it cannot run. No network or account operation is part of this probe.
 
+## Common router examples
+
+These mappings help choose an archive on an **already installed, compatible
+OpenWrt-family system**. They do not certify this package on those devices.
+Architecture references were checked against OpenWrt device data on 2026-10-30.
+
+| Exact model | Candidate archive | Evidence and restriction |
+| --- | --- | --- |
+| GL.iNet GL-MT6000 (Flint 2) | linux-arm64 | [Official device data](https://openwrt.org/toh/hwdata/gl.inet/gl.inet_gl-mt6000); package device-test pending |
+| GL.iNet GL-MT3000 (Beryl AX) | linux-arm64 | [Official device data](https://openwrt.org/toh/hwdata/gl.inet/gl.inet_gl-mt3000); package device-test pending |
+| Xiaomi AX3000T RD03 / RD23, MediaTek variants | linux-arm64 | [Official device data](https://openwrt.org/toh/hwdata/xiaomi/xiaomi_mi_router_ax3000t) and [hardware differences](https://openwrt.org/toh/xiaomi/ax3000t); excludes RD03v2; package device-test pending |
+
+Run preflight on the actual system. A stock vendor OS, changed hardware revision,
+or missing storage/dependencies can invalidate an otherwise correct CPU choice.
+
 ## Firmware scope
 
 | Family | Initial scope | Conditions |
