@@ -145,6 +145,43 @@ esac''')
         self.assertFalse((self.root / 'etc/firefox-vpn').exists())
         self.assertFalse((self.root / 'etc/init.d/firefox-vpn').exists())
 
+    def test_localized_preflight_and_failures(self):
+        messages = {
+            'en': ('Preflight passed', 'Wrong CPU package'),
+            'fa': ('بررسی پیش‌نیازها موفق بود', 'بسته با معماری پردازنده سازگار نیست'),
+            'ru': ('Предварительная проверка пройдена', 'Неверный пакет CPU'),
+            'ar': ('نجح الفحص المسبق', 'حزمة المعالج غير مناسبة'),
+        }
+        for language, (success, failure) in messages.items():
+            with self.subTest(language=language):
+                self.file('pkg/TARGET', 'armv7\n')
+                result = self.run_install('--lang', language, '--check')
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(success, result.stdout)
+                self.assertFalse((self.root / 'etc/firefox-vpn').exists())
+                self.file('pkg/TARGET', 'arm64\n')
+                result = self.run_install('--lang', language, '--check')
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(failure, result.stderr)
+                self.assertFalse((self.root / 'etc/init.d/firefox-vpn').exists())
+        self.assertEqual(self.run_install('--lang', 'invalid', '--check').returncode, 2)
+
+    def test_russian_arabic_install_and_uninstall_keep_accounts_private(self):
+        for language, installed, removed in [('ru', 'Установлено.', 'Удалено.'),
+                                               ('ar', 'تم التثبيت.', 'تمت الإزالة.')]:
+            with self.subTest(language=language):
+                result = self.run_install('--lang', language)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(installed, result.stdout)
+                self.assertNotIn('PRIVATE_TEST_PASSWORD', result.stdout + result.stderr)
+                self.assertEqual((self.root / 'etc/firefox-vpn/initial-login.txt').read_text().strip(), 'PRIVATE_TEST_PASSWORD')
+                result = subprocess.run(['/bin/sh', str(self.root / 'pkg/uninstall.sh'), language],
+                    env={'PATH':str(self.root / 'bin')+':/usr/bin:/bin'}, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(removed, result.stdout)
+                self.assertTrue((self.root / 'etc/firefox-vpn/config.json').exists())
+                self.assertFalse((self.root / 'etc/init.d/firefox-vpn').exists())
+
     def test_experimental_requires_opt_in(self):
         self.file('etc/openwrt_release', "DISTRIB_ID='ImmortalWrt'\nDISTRIB_RELEASE='24.10'\n")
         self.assertNotEqual(self.run_install('--check').returncode, 0)
@@ -207,3 +244,4 @@ esac''')
 
 if __name__ == '__main__':
     unittest.main()
+

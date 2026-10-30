@@ -1,6 +1,6 @@
 # Device test checklist
 
-[فارسی](TESTING.fa.md)
+[English](TESTING.md) · [فارسی](TESTING.fa.md) · [Русский](TESTING.ru.md) · [العربية](TESTING.ar.md)
 
 Use a spare device or a maintenance window and keep a working management path.
 Do not replace a working legacy test1 installation. Preserve account data locally.
@@ -29,3 +29,4 @@ script has an allowlist; review its output before sharing. No telemetry is colle
 [Submit a report](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose).
 A maintainer reviews evidence before changing compatibility status. One successful
 report applies to that exact combination; it does not certify an entire brand.
+

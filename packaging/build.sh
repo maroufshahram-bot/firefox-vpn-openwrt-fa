@@ -22,10 +22,12 @@ printf '%s\n' "$target" > "$out/TARGET"
 cp "$base/VERSION" "$out/PACKAGE_VERSION"
 cp "$base/packaging/install.sh" "$base/packaging/uninstall.sh" \
  "$base/packaging/platform.sh" "$base/packaging/diagnose.sh" "$out/"
-cp "$base/LICENSE" "$base/README.md" "$base/README.fa.md" "$out/"
+cp "$base/LICENSE" "$base/README.md" "$base/README.fa.md" \
+ "$base/README.ru.md" "$base/README.ar.md" "$out/"
 mkdir -p "$out/docs"
 cp "$base"/docs/*.md "$out/docs/"
 cp -R "$base/src" "$out/"
 cd "$out"
 sha256sum bin/firefox-vpn-core > SHA256SUMS
 echo "Built $target. Package it with: python3 scripts/package.py $target"
+

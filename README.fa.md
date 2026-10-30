@@ -2,7 +2,7 @@
 
 **یکپارچه‌سازی مستقل کلاینت غیررسمی ⁦Firefox VPN⁩ با ⁦OpenWrt⁩**
 
-[English](README.md) · [فارسی](README.fa.md) · [راهنمای نصب](docs/INSTALL.fa.md) · [سازگاری](docs/COMPATIBILITY.fa.md) · [ثبت نتیجه تست](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose)
+[English](README.md) · [فارسی](README.fa.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [راهنمای نصب](docs/INSTALL.fa.md) · [سازگاری](docs/COMPATIBILITY.fa.md) · [ثبت نتیجه تست](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose)
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
 [![Validation](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/actions/workflows/validate.yml/badge.svg)](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/actions/workflows/validate.yml)
@@ -30,7 +30,7 @@
 | عیب‌یابی محلی | تولید گزارش محدود بدون ارسال خودکار |
 | فرایند ساخت | تولید آرشیوهای ⁦ARMv7⁩، ⁦ARM64⁩، ⁦x86-64⁩، ⁦MIPS⁩ و ⁦MIPS⁩ با ترتیب بایت معکوس |
 
-مستندات و پیام‌های نصب فارسی و انگلیسی آمریکایی هستند. رابط وب هستهٔ اصلی در این پروژه ترجمه نشده است.
+مستندات و پیام‌های نصب به فارسی، انگلیسی آمریکایی، روسی و عربی در دسترس هستند. آرشیوهای منتشرشدهٔ ⁦v0.2.0-rc.1⁩ همچنان نصب‌کنندهٔ فارسی و انگلیسی دارند؛ پیام‌های روسی و عربی در کد منبع برای ساخت بعدی اضافه شده‌اند. رابط وب هستهٔ اصلی در این پروژه ترجمه نشده است.
 
 ## دریافت فایل
 
@@ -58,7 +58,7 @@
 
 ## مشارکت
 
-[نتیجه تست موفق یا ناموفق](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose) را با مدل دقیق، نسخهٔ فریم‌ور، معماری، نسخهٔ بسته و نتیجهٔ هر آزمون ثبت کنید. گزارش فارسی و انگلیسی پذیرفته می‌شود.
+[نتیجه تست موفق یا ناموفق](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose) را با مدل دقیق، نسخهٔ فریم‌ور، معماری، نسخهٔ بسته و نتیجهٔ هر آزمون ثبت کنید. گزارش فارسی، انگلیسی، روسی و عربی پذیرفته می‌شود.
 
 [مشارکت](CONTRIBUTING.md) · [امنیت](SECURITY.md) · [تغییرات](CHANGELOG.md) · [ساخت از کد](docs/BUILDING.md)
 
@@ -67,3 +67,4 @@
 ساخت و نگهداری یکپارچه‌سازی ⁦OpenWrt:⁩ **شهرام معروف — ⁦Shahram Marouf⁩**.
 توسعهٔ هسته: [armanlife/firefox-vpn-client](https://github.com/armanlife/firefox-vpn-client).
 [مشخصات منبع اصلی](src/UPSTREAM.md) و [مجوز GPL-3.0](LICENSE) حفظ شده‌اند.
+

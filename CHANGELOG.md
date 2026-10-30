@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Add Russian and Arabic README, installation, compatibility and device-testing guides.
+- Add `--lang ru` / `--lang ar` installer messages and `ru` / `ar` uninstall messages.
+- Link all four languages; keep published rc.1 archives unchanged and clearly
+  distinguish their English/Persian installer from the next source build.
+
 ## 0.2.0-rc.1 — community testing candidate
 
 - Add US-English and Persian entry points and full installation/testing guides.
@@ -18,3 +25,4 @@
 - procd service, LuCI dashboard shortcut and PassWall2 setup instructions.
 - Runtime components reported working, including after reboot; integrated installer
   not verified on a real device.
+

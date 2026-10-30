@@ -2,7 +2,7 @@
 
 **An independent OpenWrt integration for the unofficial Firefox VPN client.**
 
-[English](README.md) · [فارسی](README.fa.md) · [Install](docs/INSTALL.md) · [Compatibility](docs/COMPATIBILITY.md) · [Report a test](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose)
+[English](README.md) · [فارسی](README.fa.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Install](docs/INSTALL.md) · [Compatibility](docs/COMPATIBILITY.md) · [Report a test](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose)
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
 [![Validation](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/actions/workflows/validate.yml/badge.svg)](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/actions/workflows/validate.yml)
@@ -37,7 +37,9 @@ real-device testing. A passing build is not a device compatibility claim.
 | Local diagnostics | Generate a small allowlisted report without uploading it |
 | Community build pipeline | Build ARMv7, ARM64, x86-64, MIPS and MIPS little-endian archives |
 
-Documentation and installer messages are available in Persian and US English.
+Documentation and installer messages are available in Persian, US English, Russian and Arabic.
+The published v0.2.0-rc.1 archives still contain the English/Persian installer;
+Russian and Arabic installer messages are included in source for the next build.
 The upstream dashboard is not translated by this project.
 
 ## Downloads and experimental builds
@@ -76,7 +78,7 @@ Check the actual run result before downloading.
 
 [Report a successful or failed device test](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose).
 Include the exact model, firmware version, architecture, package version and
-individual test outcomes. Persian and English reports are welcome.
+individual test outcomes. Reports in Persian, English, Russian and Arabic are welcome.
 
 See [Contributing](CONTRIBUTING.md), [Security](SECURITY.md),
 [Changelog](CHANGELOG.md), and [build instructions](docs/BUILDING.md).
@@ -87,3 +89,4 @@ Created and maintained by **Shahram Marouf**. The core is developed by
 [armanlife/firefox-vpn-client](https://github.com/armanlife/firefox-vpn-client);
 this repository supplies the OpenWrt integration, packaging and documentation.
 See [upstream provenance](src/UPSTREAM.md). Distributed under [GPL-3.0](LICENSE).
+

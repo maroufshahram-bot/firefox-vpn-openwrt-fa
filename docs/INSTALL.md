@@ -1,6 +1,11 @@
 # Installation
 
-[فارسی](INSTALL.fa.md) · [Compatibility](COMPATIBILITY.md)
+[English](INSTALL.md) · [فارسی](INSTALL.fa.md) · [Русский](INSTALL.ru.md) · [العربية](INSTALL.ar.md) · [Compatibility](COMPATIBILITY.md)
+
+Installer source accepts `--lang en|fa|ru|ar`. Published **v0.2.0-rc.1** archives
+contain the earlier English/Persian installer. With a newer build containing the
+translations, use `--lang ru` or `--lang ar`; uninstall accepts `ru` or `ar` as its
+first argument. Do not mix installer files from different builds.
 
 ## Before you start
 
@@ -182,3 +187,4 @@ sh uninstall.sh en
 Account data in `/etc/firefox-vpn` is preserved. No destructive account purge is
 provided. This package does not implement automatic core updates; use reviewed
 project releases, not the upstream desktop updater or a generic Linux installer.
+

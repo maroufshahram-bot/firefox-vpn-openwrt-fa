@@ -1,6 +1,6 @@
 # Compatibility
 
-[فارسی](COMPATIBILITY.fa.md)
+[English](COMPATIBILITY.md) · [فارسی](COMPATIBILITY.fa.md) · [Русский](COMPATIBILITY.ru.md) · [العربية](COMPATIBILITY.ar.md)
 
 Compatibility belongs to a **model + hardware revision + firmware + package**
 combination. The same brand or CPU architecture does not establish compatibility.
@@ -68,3 +68,4 @@ For each report, record the exact model/revision, firmware build, CPU, package,
 preflight result, fresh-install/upgrade status, login, LAN browsing, sleep/wake,
 service restart and reboot. Use [the test checklist](TESTING.md).
 Maintainer review is required before updating this evidence table.
+
