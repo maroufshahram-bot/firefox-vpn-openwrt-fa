@@ -1,7 +1,7 @@
 #!/bin/sh
 # Build on a development machine, never on the router.
 set -eu
-base=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+base=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 target=${1:-armv7}
 case "$target" in
     armv7) arch=arm; arm=7 ;;

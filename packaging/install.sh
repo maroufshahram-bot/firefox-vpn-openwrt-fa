@@ -2,7 +2,7 @@
 # OpenWrt-family integration. Never changes firewall or PassWall2 settings.
 set -eu
 umask 077
-base=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+base=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 lang=en
 experimental=0
 check_only=0

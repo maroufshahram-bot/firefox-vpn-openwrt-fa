@@ -16,9 +16,9 @@ source and license. The packager normalizes archive order, ownership and timesta
 and writes an archive checksum beside it in `dist/`. This makes packaging repeatable
 for identical inputs; it does not claim independently verified reproducible Go builds.
 
-The build workflow compiles each target and uploads separate artifacts. Tags matching
-`v*` additionally publish a prerelease only after every matrix build succeeds.
-Tags must match `VERSION`. All published candidates remain unverified on devices
+The build workflow compiles each target and uploads separate artifacts. Main-branch candidate builds publish a prerelease only after every validation
+and matrix build succeeds. VERSION must identify a release candidate; existing
+release assets are never silently replaced. Optional `v*` tags must match VERSION. All published candidates remain unverified on devices
 until reports support a stronger status. No firmware images or native ipk/apk
 packages are generated in this iteration.
 
