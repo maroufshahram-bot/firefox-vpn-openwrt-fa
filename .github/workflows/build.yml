@@ -1,0 +1,58 @@
+name: Build community candidate
+on:
+  push:
+    branches: [main, community-release-v0.2]
+    tags: ['v*']
+    paths-ignore: ['**/*.md', '.github/ISSUE_TEMPLATE/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python3 -m pip install PyYAML
+      - run: python3 -m unittest discover -s tests -v
+      - run: python3 scripts/validate.py
+  build:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [armv7, arm64, amd64, mips, mipsle]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: src/core/go.mod
+          cache-dependency-path: src/core/go.sum
+      - run: sh packaging/build.sh "${{ matrix.target }}"
+      - run: python3 scripts/package.py "${{ matrix.target }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firefox-vpn-linux-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+  prerelease:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [validate, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify tag matches package version
+        run: test "$GITHUB_REF_NAME" = "v$(cat VERSION)"
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+      - name: Publish community testing prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" release/* --verify-tag --prerelease --title "Firefox VPN for OpenWrt $GITHUB_REF_NAME" --notes-file docs/RELEASE_NOTES.md

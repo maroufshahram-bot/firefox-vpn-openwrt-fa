@@ -1,0 +1,63 @@
+name: Bug report / گزارش مشکل
+description: Report a reproducible installation or runtime problem.
+title: '[bug] '
+body:
+- type: markdown
+  attributes:
+    value: English / فارسی welcome. Never upload passwords, tokens, account backups,
+      real IPs or full logs. اطلاعات خصوصی و لاگ کامل را منتشر نکنید.
+- type: input
+  id: model
+  attributes:
+    label: Router model and hardware revision / مدل و بازنگری سخت‌افزار
+  validations:
+    required: true
+- type: input
+  id: firmware
+  attributes:
+    label: Firmware and exact build / فریم‌ور و شماره ساخت
+  validations:
+    required: true
+- type: input
+  id: package
+  attributes:
+    label: Package version and CPU target / نسخه بسته و معماری
+  validations:
+    required: true
+- type: dropdown
+  id: method
+  attributes:
+    label: Installation / روش نصب
+    options:
+    - Fresh install / نصب تازه
+    - Reinstall or upgrade / نصب مجدد یا ارتقا
+    - Preflight only / فقط بررسی اولیه
+  validations:
+    required: true
+- type: textarea
+  id: steps
+  attributes:
+    label: Steps to reproduce / مراحل تکرار مشکل
+  validations:
+    required: true
+- type: textarea
+  id: expected
+  attributes:
+    label: Expected result / نتیجه مورد انتظار
+  validations:
+    required: true
+- type: textarea
+  id: actual
+  attributes:
+    label: Actual result / نتیجه واقعی
+    description: Include only manually redacted error excerpts.
+  validations:
+    required: true
+- type: checkboxes
+  id: privacy
+  attributes:
+    label: Privacy review / بازبینی حریم خصوصی
+    options:
+    - label: I removed private identifiers, credentials and account data. اطلاعات
+        خصوصی حذف شده است.
+      required: true

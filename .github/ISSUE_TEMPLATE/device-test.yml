@@ -1,0 +1,78 @@
+name: Device test / نتیجه تست دستگاه
+description: Share successful, failed and skipped checks for one exact device/firmware
+  combination.
+title: '[device-test] '
+body:
+- type: markdown
+  attributes:
+    value: English / فارسی welcome. Never upload passwords, tokens, account backups,
+      real IPs or full logs. اطلاعات خصوصی و لاگ کامل را منتشر نکنید.
+- type: input
+  id: model
+  attributes:
+    label: Router model and hardware revision / مدل و بازنگری سخت‌افزار
+  validations:
+    required: true
+- type: input
+  id: firmware
+  attributes:
+    label: Firmware and exact build / فریم‌ور و شماره ساخت
+  validations:
+    required: true
+- type: input
+  id: package
+  attributes:
+    label: Package version and CPU target / نسخه بسته و معماری
+  validations:
+    required: true
+- type: dropdown
+  id: method
+  attributes:
+    label: Installation / روش نصب
+    options:
+    - Fresh install / نصب تازه
+    - Reinstall or upgrade / نصب مجدد یا ارتقا
+    - Preflight only / فقط بررسی اولیه
+  validations:
+    required: true
+- type: textarea
+  id: checks
+  attributes:
+    label: Per-step outcomes / نتیجه هر مرحله
+    value: 'Preflight: not tested
+
+      Install: not tested
+
+      LuCI dashboard: not tested
+
+      Mozilla login: not tested
+
+      Connection test: not tested
+
+      LAN browsing (no alternate VPN): not tested
+
+      Idle/wake: not tested
+
+      Service restart: not tested
+
+      Reboot without manual startup: not tested
+
+      Reinstall (optional): not tested
+
+      Uninstall/account preservation (optional): not tested'
+  validations:
+    required: true
+- type: textarea
+  id: report
+  attributes:
+    label: Reviewed diagnostics and notes / گزارش بازبینی‌شده و توضیحات
+    description: 'Optional: output from diagnose.sh after reviewing it for private
+      details.'
+- type: checkboxes
+  id: privacy
+  attributes:
+    label: Privacy review / بازبینی حریم خصوصی
+    options:
+    - label: I removed private identifiers, credentials and account data. اطلاعات
+        خصوصی حذف شده است.
+      required: true

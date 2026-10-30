@@ -1,209 +1,83 @@
-# فایرفاکس VPN روی Google WiFi و OpenWrt
+# Firefox VPN for OpenWrt
 
-بستهٔ فارسی نصب و راه‌اندازی کلاینت غیررسمی Firefox VPN، برای Google WiFi (Gale).
+**An independent OpenWrt integration for the unofficial Firefox VPN client.**
 
-این مخزن محصول رسمی Mozilla نیست. هسته از [armanlife/firefox-vpn-client](https://github.com/armanlife/firefox-vpn-client) است و Firefox مرورگر لازم نیست روی روتر نصب باشد.
+[English](README.md) · [فارسی](README.fa.md) · [Install](docs/INSTALL.md) · [Compatibility](docs/COMPATIBILITY.md) · [Report a test](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose)
 
-## وضعیت آزمایش
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
+[![Validation](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/actions/workflows/validate.yml/badge.svg)](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/actions/workflows/validate.yml)
 
-| مشخصه | دستگاه آزمایش‌شده |
-|---|---|
-| مدل | Google WiFi (Gale) |
-| معماری | ARMv7، خروجی armv7l، ۳۲ بیتی |
-| Target | ipq40xx/chromium |
-| OpenWrt | 25.12.1، ساخت r32768-b21cfa8f8c |
-| Kernel | 6.12.74 |
-| نسخه هسته | 1.0.5 |
+Run the [upstream core](https://github.com/armanlife/firefox-vpn-client) as an
+OpenWrt service, open its dashboard from LuCI, and use its authenticated local
+SOCKS proxy with PassWall2. No desktop environment or Firefox browser is required
+on the router. A **Mozilla / Firefox account is required**.
 
-ورود حساب، اجرای هسته، تست موفق اتصال، میان‌بر منوی Services و عبور اینترنت گوشی از PassWall2 روی این دستگاه تأیید شده‌اند. سرویس procd ایجاد و راه‌اندازی شده؛ عملکرد موفق پس از ریبوت نیز تأیید شده است. نصب‌کنندهٔ یکپارچهٔ این مخزن هنوز روی روتر واقعی اجرا نشده است؛ این را با آزمایش اجزای آن اشتباه نگیرید. روی سایر روترهای گوگل یا صرفاً هر پردازنده ARMv7 ادعای سازگاری نداریم.
+This project is not affiliated with or endorsed by Mozilla. Account eligibility,
+service availability, speed, quotas, and future access are controlled upstream.
 
-## امکانات بسته
+## Start here
 
-- فایل اجرایی مستقل ARMv7، بدون نیاز به محیط دسکتاپ.
-- نصب سرویس procd، شروع خودکار و تلاش برای اجرای مجدد پس از توقف غیرمنتظره.
-- پنل در Services → Firefox VPN — فایرفاکس؛ با انتخاب آن پنل مستقیم در همان تب باز می‌شود، نه داخل iframe.
-- نگهداری دائمی حساب‌ها در /etc/firefox-vpn و لاگ تازه‌نصب‌شده در RAM.
-- تولید رمز جداگانه برای پنل و پراکسی.
-- حفظ تنظیمات هنگام نصب مجدد و حذف برنامه بدون حذف حساب‌ها.
-- راهنما و پیام‌های نصب فارسی. رابط وب اصلی ترجمه نشده است.
+1. Read the [compatibility matrix](docs/COMPATIBILITY.md) before downloading.
+2. Follow the [installation guide](docs/INSTALL.md), including the PassWall2 loop-prevention step.
+3. Run the [device test checklist](docs/TESTING.md) and share the result.
 
-## پیش‌نیازها
+**Current status: release candidate.** Runtime components have been reported
+working on one Google WiFi (Gale) installation, including after reboot. The new
+integrated installer and every other device/firmware combination still require
+real-device testing. A passing build is not a device compatibility claim.
 
-۱. روتر مطابق جدول بالا، با OpenWrt و LuCI از قبل نصب‌شده؛ این بسته فریم‌ور نیست.
-۲. اینترنت کارا برای دریافت کد ورود و تماس با سرویس موزیلا.
-۳. **حساب Firefox / Mozilla و دسترسی به ایمیل و روش تأیید آن ضروری است.** ایجاد حساب و مجازبودن دسترسی به سرویس بر عهده کاربر است. ورود موفق، سهمیه و دسترسی به کشور/سرور برای همه حساب‌ها تضمین نیست.
-۴. PassWall2 برای عبور ترافیک دستگاه‌های شبکه؛ نصب و تهیه آن جداگانه است.
-۵. دسترسی root و حداقل ۴۰ مگابایت فضای آزاد. نسخهٔ آزمایش‌شده حدود ۴۸۳ مگابایت RAM کل داشته است؛ حداقل مصرف RAM تعیین نشده است.
+## What is included
 
-## ۱. دسترسی عمومی به ترمینال روتر
+| Component | Purpose |
+| --- | --- |
+| Preflight checks | Validate firmware family, CPU, executable, LuCI, and available storage before installing |
+| OpenWrt service | Start at boot and restart the core after unexpected exits through procd |
+| LuCI menu entry | Open the upstream dashboard from Services → Firefox VPN |
+| Persistent account storage | Preserve configuration and accounts during reinstall and uninstall |
+| Local diagnostics | Generate a small allowlisted report without uploading it |
+| Community build pipeline | Build ARMv7, ARM64, x86-64, MIPS and MIPS little-endian archives |
 
-از کامپیوتر، لپ‌تاپ، گوشی یا هر دستگاه دارای نرم‌افزار SSH می‌توانید متصل شوید. دستگاه باید از طریق کابل شبکه، وای‌فای یا مسیر مدیریتی امنِ از قبل تنظیم‌شده به روتر دسترسی داشته باشد.
+Documentation and installer messages are available in Persian and US English.
+The upstream dashboard is not translated by this project.
 
-در مثال‌ها، `ROUTER_ADDRESS` یک جای‌نگهدار است؛ آن را فقط روی دستگاه خود با آدرس یا نام میزبان روترتان جایگزین کنید. آدرس روتر را از تنظیمات شبکهٔ خود یا مدیر شبکه بگیرید؛ در شبکهٔ خانگی معمولاً همان Default Gateway است.
+## Downloads and experimental builds
 
-**روش SSH:** در Terminal، PowerShell یا هر کلاینت سازگار با SSH اجرا کنید:
+The [existing v0.1.0 archive](downloads/) is restricted to the original reference
+platform. It does **not** contain the new installer.
 
-```sh
-ssh root@ROUTER_ADDRESS
-```
+New release-candidate archives are generated by the [build workflow](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/actions/workflows/build.yml).
+A successful workflow exposes downloadable artifacts; availability depends on the
+actual workflow result. Artifacts may require a GitHub login. Prefer assets in
+[Releases](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/releases)
+when a reviewed release is available. Until then, this is a community testing release.
 
-در کلاینت‌های دارای رابط گرافیکی مانند PuTTY نیز Host را آدرس روتر، نوع اتصال را SSH و نام کاربری را root قرار دهید؛ پورت پیش‌فرض 22 است، مگر آنکه قبلاً تغییر داده باشید. رمز ورود روتر یا کلید SSH خود را استفاده کنید. در اولین اتصال، اثرانگشت میزبان را از مسیر مورد اعتماد بررسی کنید.
+Archives are application installers, **not firmware images, backups, `.ipk`, or `.apk` packages**.
+Choose the CPU target from the compatibility guide. Other platforms require an
+explicit `--experimental` opt-in; no brand-wide support is implied.
 
-**روش اختیاری تحت وب:** اگر ترمینال در LuCI دارید، همان کافی است. در غیر این صورت در System → Software فهرست بسته‌ها را به‌روزرسانی و در صورت نیاز luci-app-ttyd را نصب کنید. برای انتقال فایل از طریق مرورگر نیز luci-app-filemanager اختیاری است. پس از تازه‌سازی، Terminal و File Manager را در منو پیدا کنید؛ محل منو بسته به نسخه می‌تواند متفاوت باشد. نصب این دو بسته برای اتصال SSH لازم نیست.
+## Limits to understand
 
-دسترسی مدیریتی را در شبکهٔ مورد اعتماد یا مسیر امنِ از قبل تنظیم‌شده استفاده کنید؛ برای این نصب نیازی به بازکردن پورت مدیریتی روی اینترنت نیست.
+- TCP proxying only; SOCKS5 UDP is not supported. Some calls and games will not work.
+- The pinned upstream version documents destination ports 80, 443, 8080, and 8443.
+- The dashboard uses HTTP on the router's LAN IPv4 address. Use a trusted LAN;
+  do not expose it to WAN. Existing configuration is preserved, so review its bindings.
+- PassWall2 is configured separately. Turn off Localhost Proxy before selecting
+  this node to prevent the core from proxying its own connection back into itself.
+- Legacy `test1` installations require a separate migration; do not replace a
+  working installation with this release candidate.
 
-## ۲. انتقال و نصب
+## Help improve compatibility
 
-از [این لینک، بستهٔ آمادهٔ نصب را دانلود کنید](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/raw/refs/heads/main/downloads/firefox-vpn-openwrt-fa-v0.1.0.tar.gz). از Code → Download ZIP به‌جای بستهٔ نصب استفاده نکنید. با فایل‌منیجر LuCI یا یک ابزار انتقال فایل سازگار با روتر، آن را در /root بارگذاری کنید. برای مثال می‌توانید از WinSCP یا ابزار SCP استفاده کنید؛ پشتیبانی SFTP به نصب زیرسامانهٔ آن روی روتر بستگی دارد. نام آرشیو انتشار حاضر firefox-vpn-openwrt-fa-v0.1.0.tar.gz است.
+[Report a successful or failed device test](https://github.com/maroufshahram-bot/firefox-vpn-openwrt-fa/issues/new/choose).
+Include the exact model, firmware version, architecture, package version and
+individual test outcomes. Persian and English reports are welcome.
 
-اگر ابزار SCP دارید، این دستور را **روی دستگاهی که فایل را دانلود کرده‌اید** و در پوشهٔ همان فایل اجرا کنید:
+See [Contributing](CONTRIBUTING.md), [Security](SECURITY.md),
+[Changelog](CHANGELOG.md), and [build instructions](docs/BUILDING.md).
 
-```sh
-scp firefox-vpn-openwrt-fa-v0.1.0.tar.gz root@ROUTER_ADDRESS:/root/
-```
+## Credits and license
 
-اگر کلاینت SCP به‌دلیل نبود SFTP روی روتر خطا داد، در کلاینت‌های OpenSSH از گزینهٔ `-O` برای پروتکل قدیمی SCP استفاده کنید، یا روش انتقال دیگری را انتخاب کنید:
-
-```sh
-scp -O firefox-vpn-openwrt-fa-v0.1.0.tar.gz root@ROUTER_ADDRESS:/root/
-```
-
-**آرشیو را در بخش بازیابی Backup یا Flash Firmware بارگذاری نکنید؛ بسته apk/ipk هم نیست.**
-
-در ترمینال اجرا کنید:
-
-```sh
-cd /root
-tar -xzf firefox-vpn-openwrt-fa-v0.1.0.tar.gz
-sh /root/firefox-vpn-openwrt-fa/install.sh
-```
-
-نصب‌کننده مدل، معماری، نسخه، فضای آزاد، LuCI و checksum فایل اجرایی را بررسی می‌کند. حساب‌های موجود در مسیر استاندارد را حفظ می‌کند. رمزهای اولیه را در ترمینال نشان می‌دهد؛ برای دیگران ارسال نکنید.
-
-**کاربر نسخهٔ آزمایشی قدیمی:** این نصب تازه را روی سرویس موجودِ نسخه test1 اجرا نکنید. داده‌های آن نسخه در مسیر دیگری هستند و خودکار مهاجرت داده نمی‌شوند. همان نصب کارای قبلی را نگه دارید؛ مهاجرت نیاز به نسخهٔ جداگانه دارد.
-
-## ۳. بازکردن پنل و ورود حساب
-
-صفحه LuCI را تازه‌سازی کنید. به Services → Firefox VPN — فایرفاکس بروید. آدرس پنل از نام میزبان فعلی و پورت 10820 ساخته می‌شود. پنل HTTP است؛ فقط در شبکهٔ داخلی مورد اعتماد استفاده کنید و پورت آن را روی WAN باز نکنید.
-
-با dashboard_username و dashboard_password چاپ‌شده وارد شوید. این ورود فقط برای پنل روتر است، نه حساب Mozilla.
-
-در Accounts → Add account، حساب Firefox را اضافه کنید و مراحل ایمیل، احراز هویت دومرحله‌ای یا CAPTCHA را در صورت درخواست کامل کنید. سپس Test connection را بزنید. پیام Connection OK نشان‌دهندهٔ موفقیت درخواست آزمایشی است؛ مدت آن پینگ نیست.
-
-بستن تب مرورگر یا ترمینال سرویس را خاموش نمی‌کند.
-
-### تغییر رمز پنل
-
-در ترمینال:
-
-```sh
-/etc/init.d/firefox-vpn stop
-/usr/lib/firefox-vpn/firefox-vpn-core -panel -data-dir /etc/firefox-vpn
-/etc/init.d/firefox-vpn start
-```
-
-## ۴. جلوگیری از حلقه در PassWall2 — ضروری
-
-**پیش از انتخاب نود فایرفاکس، در PassWall2 → Basic Settings گزینه Localhost Proxy را خاموش و Save & Apply کنید.** پراکسی ترافیک دستگاه‌های LAN روشن بماند.
-
-در غیر این صورت پسوال ترافیک خود هسته را دوباره به همان هسته می‌فرستد، اتصال قطع می‌شود و پنل هشدار This program’s own connections come back to it می‌دهد. این مشکل روی دستگاه آزمایش‌شده رخ داد و با خاموش‌کردن Localhost Proxy رفع شد.
-
-این تنظیم بر ترافیک خود روتر برای دیگر نودها هم اثر دارد؛ انتخاب نود دیگر خودکار آن را برنمی‌گرداند.
-
-## ۵. ساخت نود PassWall2
-
-در Node List → Add:
-
-| فیلد | مقدار |
-|---|---|
-| Node Remarks | Firefox VPN |
-| Group Name | Firefox، اختیاری |
-| Type | Xray |
-| Protocol | Socks |
-| Address | 127.0.0.1 |
-| Port | 10810 |
-| Username | نام کاربری پراکسی |
-| Password | رمز پراکسی |
-| TLS | خاموش |
-| Transport | RAW (TCP) |
-| Mux | خاموش |
-| Chain Proxy | Close / Not use |
-
-برای دیدن فقط اطلاعات پراکسی در ترمینال:
-
-```sh
-jsonfilter -i /etc/firefox-vpn/config.json \
-  -e '@.proxy.username' -e '@.proxy.password'
-```
-
-خط اول نام کاربری و خط دوم رمز است. این دو با ورود پنل متفاوت‌اند؛ خروجی را منتشر نکنید.
-
-Save & Apply کنید؛ سپس در Basic Settings نود Firefox VPN را انتخاب و اعمال کنید. روی یک دستگاه متصل به شبکهٔ روتر، VPN محلی و مسیرهای جایگزین اینترنت را غیرفعال و یک سایت نیازمند تونل را باز کنید تا ترافیک آزمایش حتماً از روتر عبور کند. در صورت قطع اینترنت، نود سالم قبلی را برگردانید.
-
-نصب‌کننده تنظیمات PassWall2 را خودکار تغییر نمی‌دهد؛ تفاوت نسخه‌ها و سیاست شبکه را با راهنمای بالا تنظیم کنید.
-
-## ۶. روشن‌بودن دائمی و حالت Sleeping
-
-سرویس همیشه اجرا می‌شود و پسوال تعیین می‌کند ترافیک دستگاه‌ها از کدام نود عبور کند. خود هسته ممکن است پس از بی‌کاری تونل را ببندد و Sleeping نشان دهد؛ اولین درخواست یا Test connection آن را بیدار می‌کند. روشن‌بودن سرویس به معنی بازماندن همیشگی تونل نیست. ارتباطات پس‌زمینه نیز ممکن است وجود داشته باشد.
-
-## ۷. آزمون نهایی اجرای خودکار
-
-در زمان مناسب System → Reboot را بزنید. پس از بازگشت اتصال شبکه، بدون بازکردن ترمینال، از یک دستگاه متصل به روتر وب‌گردی کنید؛ VPN محلی و مسیرهای جایگزین اینترنت روی دستگاه آزمایش غیرفعال باشند. سپس منوی Firefox VPN و تست اتصال را بررسی کنید. موفقیت این مرحله را پیش از ادعای «تست reboot» ثبت کنید.
-
-## حریم خصوصی هنگام اشتراک‌گذاری
-
-برای نمونه‌ها از جای‌نگهدار استفاده کنید. آدرس واقعی شبکه، نام Wi-Fi، MAC، شماره سریال دستگاه، ایمیل حساب، رمزها، کلیدها، توکن‌ها، کدهای تأیید، بکاپ حساب و خروجی کامل تنظیمات یا لاگ خصوصی را منتشر نکنید. پیش از ارسال تصویر ترمینال یا پنل، بخش‌های خصوصی را بپوشانید. آدرس `127.0.0.1` در جدول نود، آدرس استاندارد loopback خود روتر است و اطلاعات اختصاصی کاربر نیست.
-
-## محدودیت‌های مهم
-
-- تونل این پروژه TCP است؛ SOCKS5 UDP پشتیبانی نمی‌شود. بعضی تماس‌ها و بازی‌ها کار نمی‌کنند؛ واسط VLESS هم این محدودیت را حذف نمی‌کند.
-- طبق مستندات نسخه، اتصال مقصد به پورت‌های وب 80، 443، 8080 و 8443 محدود است. سرویس‌های ایمیل/SSH و برخی اعلان‌ها ممکن است کار نکنند.
-- دربارهٔ سهمیهٔ ثابت رایگان، سرعت و دسترسی آینده وعده نمی‌دهیم؛ تابع سرویس و حساب است.
-- حساب‌ها در فایل‌های خصوصی دستگاه نگهداری می‌شوند؛ پوشه /etc/firefox-vpn، رمزها، لاگ خصوصی یا بکاپ حساب را وارد Git نکنید.
-- این بسته به‌روزرسان مستقل ندارد؛ برای ARMv7 از نصب‌کنندهٔ upstream یا به‌روزرسان دسکتاپ استفاده نکنید.
-
-## عیب‌یابی
-
-| نشانه | اقدام |
-|---|---|
-| اینترنت با انتخاب نود فایرفاکس قطع می‌شود و هشدار loop دیده می‌شود | Localhost Proxy را خاموش، تنظیمات را اعمال و در پنل Restart کنید. |
-| پنل باز می‌شود، اینترنت کاربران قطع است | آدرس/پورت و اطلاعات پراکسی، قوانین LAN و DNS پسوال را بررسی کنید. |
-| Sleeping | با یک درخواست واقعی تست کنید؛ خواب در بی‌کاری طبیعی است. |
-| Could not fetch | وضعیت سرویس را بررسی کنید؛ پنل را با HTTP باز و صفحه را تازه‌سازی کنید. |
-| صفحه خالی داخل LuCI | این بسته از تغییر مسیر مستقیم استفاده می‌کند؛ iframe قدیمی را جایگزین کنید. |
-| UDP refused | محدودیت سرویس است، خطای نام کاربری نیست. |
-
-دستورهای نگهداری:
-
-```sh
-/etc/init.d/firefox-vpn status
-/etc/init.d/firefox-vpn restart
-logread -e firefox-vpn
-```
-
-## حذف
-
-ابتدا نود دیگری در پسوال انتخاب کنید، سپس:
-
-```sh
-sh /root/firefox-vpn-openwrt-fa/uninstall.sh
-```
-
-اطلاعات حساب در /etc/firefox-vpn حفظ می‌شود. حذف آن تنها به درخواست آگاهانهٔ مالک دستگاه انجام شود.
-
-## منبع، ساخت و مجوز
-
-هسته بدون تغییر از commit زیر ساخته شده است:
-
-```
-9f8350ce1291b51478f037d2fab8844dee5c0f74
-```
-
-کد هسته در upstream/core همراه بسته است. روی کامپیوتر با Go 1.27.2 اجرا کنید:
-
-```sh
-sh build.sh
-```
-
-هدف CGO_ENABLED=0، GOOS=linux، GOARCH=arm و GOARM=7 است. صحت checksum فقط تطابق فایل با این بسته را بررسی می‌کند و جایگزین اعتماد به ناشر نیست. تغییرات این مخزن شامل نصب‌کننده و یکپارچه‌سازی OpenWrt است؛ حق مؤلف upstream و مجوز GPL-3.0 در LICENSE حفظ شده است.
+Created and maintained by **Shahram Marouf**. The core is developed by
+[armanlife/firefox-vpn-client](https://github.com/armanlife/firefox-vpn-client);
+this repository supplies the OpenWrt integration, packaging and documentation.
+See [upstream provenance](src/UPSTREAM.md). Distributed under [GPL-3.0](LICENSE).

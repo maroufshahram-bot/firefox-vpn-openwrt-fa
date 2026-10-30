@@ -1,41 +1,124 @@
 #!/bin/sh
-# OpenWrt Google WiFi installer. Does not modify PassWall2 or firewall rules.
+# OpenWrt-family integration. Never changes firewall or PassWall2 settings.
 set -eu
 umask 077
 base=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-fail() { echo "خطا: $*" >&2; exit 1; }
-[ "$(id -u)" = 0 ] || fail 'با کاربر root اجرا کنید.'
-[ -f /etc/openwrt_release ] || fail 'این نصب‌کننده مخصوص OpenWrt است.'
+lang=en
+experimental=0
+check_only=0
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --lang) [ "$#" -ge 2 ] || exit 2; lang=$2; shift ;;
+        --experimental) experimental=1 ;;
+        --check) check_only=1 ;;
+        --help|-h)
+            echo 'Usage: sh install.sh [--lang en|fa] [--check] [--experimental]'
+            echo 'Experimental installs are not verified on your router.'
+            exit 0 ;;
+        *) echo "Unknown argument: $1" >&2; exit 2 ;;
+    esac
+    shift
+done
+case "$lang" in en|fa) ;; *) echo 'Language must be en or fa.' >&2; exit 2 ;; esac
+say() { if [ "$lang" = fa ]; then printf '%s\n' "$2"; else printf '%s\n' "$1"; fi; }
+fail() { say "$1" "$2" >&2; exit 1; }
+[ "$(id -u)" = 0 ] || fail 'Run as root.' 'با کاربر root اجرا کنید.'
+[ -f /etc/openwrt_release ] || fail 'OpenWrt-family firmware is required.' 'فریم‌ور خانواده OpenWrt لازم است.'
+# shellcheck disable=SC1091
 . /etc/openwrt_release
-[ "${DISTRIB_RELEASE:-}" = 25.12.1 ] || fail 'فقط نسخه 25.12.1 در دامنه این بسته است.'
-[ "${DISTRIB_TARGET:-}" = ipq40xx/chromium ] || fail 'پلتفرم متفاوت است.'
-[ "$(uname -m)" = armv7l ] || fail 'معماری باید armv7l باشد.'
+for tool in ubus jsonfilter sha256sum awk df sed mktemp cp mv; do
+    command -v "$tool" >/dev/null || fail "Missing dependency: $tool" "پیش‌نیاز موجود نیست: $tool"
+done
+[ -f "$base/platform.sh" ] || fail 'Incomplete package.' 'بسته ناقص است.'
+# shellcheck disable=SC1091
+. "$base/platform.sh"
+ffvpn_supported_family "${DISTRIB_ID:-}" || fail 'Unsupported firmware family.' 'این خانواده فریم‌ور پشتیبانی نمی‌شود.'
+[ -f /etc/rc.common ] && [ -x /sbin/procd ] || fail 'procd service management is required.' 'مدیریت سرویس procd لازم است.'
+[ -f /www/luci-static/resources/view.js ] || fail 'LuCI is required.' 'LuCI نصب نیست.'
 model=$(ubus call system board | jsonfilter -e '@.model')
-[ "$model" = 'Google WiFi (Gale)' ] || fail "مدل آزمایش‌شده Google WiFi (Gale) است؛ مدل شما: $model"
-if [ -f /root/firefox-openwrt-armv7-test1/data/config.json ] && [ ! -f /etc/firefox-vpn/config.json ]; then
- fail 'نصب آزمایشی قبلی پیدا شد؛ برای حفظ حساب‌ها، مهاجرت لازم است. نصب متوقف شد.'
+machine=$(uname -m)
+[ -f "$base/TARGET" ] && [ -f "$base/PACKAGE_VERSION" ] || fail 'Package metadata is missing.' 'مشخصات بسته موجود نیست.'
+target=$(cat "$base/TARGET")
+ffvpn_arch_matches "$target" "$machine" || fail 'Wrong CPU package. See the compatibility guide.' 'بسته با معماری پردازنده سازگار نیست؛ راهنمای سازگاری را ببینید.'
+if ! ffvpn_reference_platform "${DISTRIB_ID:-}" "${DISTRIB_RELEASE:-}" "${DISTRIB_TARGET:-}" "$model" "$machine"; then
+    [ "$experimental" = 1 ] || fail 'Untested platform. Review docs/COMPATIBILITY.md; use --experimental to opt in.' 'این محیط تست نشده است؛ راهنمای سازگاری را بخوانید و برای پذیرش نصب آزمایشی از --experimental استفاده کنید.'
+    say 'EXPERIMENTAL: no device compatibility has been verified.' 'آزمایشی: سازگاری روی این دستگاه تأیید نشده است.'
 fi
-[ -f /www/luci-static/resources/view.js ] || fail 'LuCI نصب نیست.'
-command -v sha256sum >/dev/null || fail 'sha256sum موجود نیست.'
-(cd "$base" && sha256sum -c SHA256SUMS) || fail 'صحت فایل اجرایی تأیید نشد.'
+if [ -f /root/firefox-openwrt-armv7-test1/data/config.json ] && [ ! -f /etc/firefox-vpn/config.json ]; then
+    fail 'Legacy test1 data found. Automatic migration is not available; keep the working installation.' 'داده نسخه test1 پیدا شد؛ مهاجرت خودکار نداریم. نصب کارای قبلی را حفظ کنید.'
+fi
+# Check only the expected binary, never a path supplied by checksum metadata.
+expected=$(awk '$2 == "bin/firefox-vpn-core" {print $1}' "$base/SHA256SUMS")
+actual=$(sha256sum "$base/bin/firefox-vpn-core" | awk '{print $1}')
+[ -n "$expected" ] && [ "$actual" = "$expected" ] || fail 'Binary checksum mismatch.' 'صحت فایل اجرایی تأیید نشد.'
+[ -x "$base/bin/firefox-vpn-core" ] || fail 'Binary is not executable; extract the archive on the router.' 'فایل اجرایی قابل اجرا نیست؛ آرشیو را روی خود روتر استخراج کنید.'
+"$base/bin/firefox-vpn-core" -version >/dev/null 2>&1 || fail 'The binary cannot run on this CPU/kernel.' 'فایل اجرایی روی این پردازنده یا کرنل اجرا نمی‌شود.'
 lan=$(ubus call network.interface.lan status | jsonfilter -e '@["ipv4-address"][0].address')
-[ -n "$lan" ] || fail 'آدرس IPv4 شبکه lan پیدا نشد.'
+# Only an IPv4 LAN binding is implemented. Do not fall back to all interfaces.
+case "$lan" in ''|*[!0-9.]*) fail 'A LAN IPv4 address is required.' 'آدرس IPv4 شبکه lan لازم است.' ;; esac
 free_kb=$(df -Pk /usr | awk 'END {print $4}')
-[ "$free_kb" -gt 40000 ] || fail 'حداقل 40 مگابایت فضای آزاد لازم است.'
-mkdir -p /usr/lib/firefox-vpn /etc/firefox-vpn
-chmod 700 /etc/firefox-vpn
-# Existing accounts/configuration are preserved. Stop only our installed service.
+binary_kb=$(du -k "$base/bin/firefox-vpn-core" | awk '{print $1}')
+needed_kb=$((binary_kb * 2 + 4096))
+[ "$needed_kb" -ge 40000 ] || needed_kb=40000
+[ "$free_kb" -gt "$needed_kb" ] || fail 'Insufficient persistent storage for installation and rollback.' 'فضای دائمی برای نصب و بازگردانی کافی نیست.'
+if [ "$check_only" = 1 ]; then
+    say 'Preflight passed. Nothing was installed. This is not a device or connectivity test.' 'بررسی پیش‌نیازها موفق بود؛ چیزی نصب نشد. این نتیجه به معنی تست عملکرد یا اتصال نیست.'
+    exit 0
+fi
+# Stage new configuration before stopping the running service.
+stage=$(mktemp -d /tmp/firefox-vpn-install.XXXXXX)
+changed=0
+was_running=0
+managed='/usr/lib/firefox-vpn/firefox-vpn-core /usr/lib/firefox-vpn/PACKAGE_VERSION /usr/lib/firefox-vpn/diagnose.sh /etc/init.d/firefox-vpn /usr/share/luci/menu.d/luci-app-firefox-vpn.json /www/luci-static/resources/view/firefox-vpn.js'
+cleanup() {
+    result=$?
+    trap - EXIT HUP INT TERM
+    if [ "$result" -ne 0 ] && [ "$changed" = 1 ]; then
+        /etc/init.d/firefox-vpn stop >/dev/null 2>&1 || true
+        for path in $managed; do
+            if [ -f "$stage/backup$path" ]; then
+                cp -p "$stage/backup$path" "$path" || true
+            else
+                rm -f "$path"
+            fi
+        done
+        if [ "$was_running" = 1 ]; then /etc/init.d/firefox-vpn start >/dev/null 2>&1 || true; fi
+        say 'Install failed; previous managed files were restored. Account data was preserved.' 'نصب ناموفق بود؛ فایل‌های قبلی برنامه بازگردانده شدند و داده حساب‌ها حفظ شد.' >&2
+    fi
+    rm -rf "$stage"
+    exit "$result"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' HUP TERM
+if [ ! -f /etc/firefox-vpn/config.json ]; then
+    mkdir -p "$stage/data"
+    "$base/bin/firefox-vpn-core" -setup-server admin -data-dir "$stage/data" > "$stage/data/initial-login.txt"
+    sed -i "s/0\.0\.0\.0:10820/$lan:10820/g; s/0\.0\.0\.0:10810/127.0.0.1:10810/g" "$stage/data/config.json"
+    [ "$(jsonfilter -i "$stage/data/config.json" -e '@.dashboard.listen')" = "$lan:10820" ] || fail 'Dashboard binding validation failed.' 'کنترل آدرس گوش‌دادن پنل ناموفق بود.'
+    [ "$(jsonfilter -i "$stage/data/config.json" -e '@.proxy.listen')" = '127.0.0.1:10810' ] || fail 'Proxy binding validation failed.' 'کنترل آدرس گوش‌دادن پراکسی ناموفق بود.'
+fi
+for path in $managed; do
+    if [ -f "$path" ]; then
+        mkdir -p "$stage/backup$(dirname "$path")"
+        cp -p "$path" "$stage/backup$path"
+    fi
+done
+if [ -x /etc/init.d/firefox-vpn ]; then
+    if /etc/init.d/firefox-vpn running >/dev/null 2>&1; then was_running=1; fi
+fi
+changed=1
 if [ -x /etc/init.d/firefox-vpn ]; then /etc/init.d/firefox-vpn stop; fi
+mkdir -p /etc/init.d /usr/lib/firefox-vpn /etc/firefox-vpn /usr/share/luci/menu.d /www/luci-static/resources/view
+chmod 700 /etc/firefox-vpn
 cp "$base/bin/firefox-vpn-core" /usr/lib/firefox-vpn/firefox-vpn-core.new
 chmod 755 /usr/lib/firefox-vpn/firefox-vpn-core.new
 mv /usr/lib/firefox-vpn/firefox-vpn-core.new /usr/lib/firefox-vpn/firefox-vpn-core
-if [ ! -f /etc/firefox-vpn/config.json ]; then
-  /usr/lib/firefox-vpn/firefox-vpn-core -setup-server admin -data-dir /etc/firefox-vpn > /etc/firefox-vpn/initial-login.txt
-  sed -i "s/0\.0\.0\.0:10820/$lan:10820/g; s/0\.0\.0\.0:10810/127.0.0.1:10810/g" /etc/firefox-vpn/config.json
-fi
-# Store daily logs in RAM; account/config files remain persistent.
+cp "$base/PACKAGE_VERSION" "$base/diagnose.sh" /usr/lib/firefox-vpn/
+chmod 755 /usr/lib/firefox-vpn/diagnose.sh
+if [ -d "$stage/data" ]; then cp -R "$stage/data/." /etc/firefox-vpn/; fi
 if [ ! -e /etc/firefox-vpn/logs ] && [ ! -L /etc/firefox-vpn/logs ]; then
-  ln -s /tmp/firefox-vpn-logs /etc/firefox-vpn/logs
+    ln -s /tmp/firefox-vpn-logs /etc/firefox-vpn/logs
 fi
 cat > /etc/init.d/firefox-vpn <<'SERVICE'
 #!/bin/sh /etc/rc.common
@@ -54,30 +137,30 @@ start_service() {
 }
 SERVICE
 chmod 755 /etc/init.d/firefox-vpn
-mkdir -p /usr/share/luci/menu.d /www/luci-static/resources/view
 cat > /usr/share/luci/menu.d/luci-app-firefox-vpn.json <<'MENU'
-{"admin/services/firefox-vpn":{"title":"Firefox VPN — فایرفاکس","order":90,"action":{"type":"view","path":"firefox-vpn"}}}
+{"admin/services/firefox-vpn":{"title":"Firefox VPN","order":90,"action":{"type":"view","path":"firefox-vpn"}}}
 MENU
 cat > /www/luci-static/resources/view/firefox-vpn.js <<'VIEW'
 'use strict';
 'require view';
 return view.extend({
     render: function() {
-        var url = 'http://' + window.location.hostname + ':10820/app/';
+        var host = window.location.hostname;
+        if (host.indexOf(':') !== -1) host = '[' + host.replace(/^\[|\]$/g, '') + ']';
+        var url = 'http://' + host + ':10820/app/';
         window.location.replace(url);
-        return E('a', {href: url}, 'بازکردن پنل فایرفاکس');
+        return E('a', {href: url}, 'Open Firefox VPN / بازکردن پنل');
     },
     handleSaveApply: null, handleSave: null, handleReset: null
 });
 VIEW
 rm -f /tmp/luci-indexcache
 rm -rf /tmp/luci-modulecache
-/etc/init.d/firefox-vpn enable
 /etc/init.d/firefox-vpn start
-printf '\nنصب انجام شد. پنل: http://%s:10820/app/\n' "$lan"
-if [ -f /etc/firefox-vpn/initial-login.txt ]; then
- echo 'مشخصات اولیه ورود؛ خصوصی نگه دارید:'
- cat /etc/firefox-vpn/initial-login.txt
-fi
-echo 'قبل از انتخاب نود فایرفاکس، Localhost Proxy را در PassWall2 خاموش کنید.'
-echo 'راهنمای README.md را برای افزودن حساب و نود دنبال کنید.'
+sleep 2
+/etc/init.d/firefox-vpn running >/dev/null 2>&1 || fail 'Service did not start.' 'سرویس اجرا نشد.'
+/etc/init.d/firefox-vpn enable
+changed=0
+say 'Installed. Open Services > Firefox VPN in LuCI using the LAN IPv4 address.' 'نصب انجام شد؛ با آدرس IPv4 شبکه داخلی، در LuCI به Services > Firefox VPN بروید.'
+say 'Initial credentials, if newly generated, are in /etc/firefox-vpn/initial-login.txt. Keep them private.' 'مشخصات ورود تازه، در صورت ایجاد، در /etc/firefox-vpn/initial-login.txt است؛ خصوصی نگه دارید.'
+say 'Disable Localhost Proxy in PassWall2 before selecting this node. Follow the installation guide.' 'پیش از انتخاب نود، Localhost Proxy را در PassWall2 خاموش کنید و راهنمای نصب را دنبال کنید.'

@@ -1,0 +1,9 @@
+/dist/
+/build/
+*.new
+__pycache__/
+# Runtime account data and diagnostics must never be committed.
+/user-data/
+/data/
+initial-login.txt
+.env
